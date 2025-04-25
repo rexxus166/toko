@@ -84,6 +84,7 @@ Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.r
 // Checkout
 Route::get('/checkout', [paymentController::class, 'checkout'])->name('cart.checkout');
 Route::post('/payment', [paymentController::class, 'processPayment'])->name('payment');
+Route::post('/checkout/callback', [paymentController::class, 'callback']);
 
 // Route logout user
 Route::post('/logout', [AuthController::class, 'userLogout'])->name('user.logout');
