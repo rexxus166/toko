@@ -1,0 +1,52 @@
+.font-poppins {
+    font-family: 'Poppins', sans-serif;
+}
+
+.font-inter {
+    font-family: 'Inter', sans-serif;
+}
+
+.product-card {
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+img.product-image {
+    width: 80px;  /* Atur lebar gambar */
+    height: 80px; /* Atur tinggi gambar */
+    object-fit: contain; /* Agar gambar tetap proporsional */
+    object-position: center; /* Posisikan gambar di tengah */
+}
+
+/* Dropdown styles */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    z-index: 50;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.payment-method-card {
+    transition: all 0.3s ease;
+}
+
+.payment-method-card:hover {
+    transform: translateY(-2px);
+}
+
+.payment-method-card.selected {
+    border-color: #2563eb;
+    background-color: #eff6ff;
+}

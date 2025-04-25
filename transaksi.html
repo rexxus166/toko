@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaksi - Toko Kelontong</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+        }
+        .modal.show {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-100">
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <div class="bg-blue-800 text-white w-64 py-6 flex flex-col">
+            <div class="px-6 mb-8">
+                <h1 class="font-poppins text-xl font-bold">Toko Kelontong</h1>
+                <p class="text-blue-200 text-sm">Admin Dashboard</p>
+            </div>
+            
+            <nav class="flex-1">
+                <a href="index.html" class="flex items-center px-6 py-3 text-blue-100 hover:bg-blue-700">
+                    <i class="fas fa-tachometer-alt mr-3"></i>
+                    Dashboard
+                </a>
+                <a href="kelola-member.html" class="flex items-center px-6 py-3 text-blue-100 hover:bg-blue-700">
+                    <i class="fas fa-users mr-3"></i>
+                    Kelola Member
+                </a>
+                <a href="kelola-produk.html" class="flex items-center px-6 py-3 text-blue-100 hover:bg-blue-700">
+                    <i class="fas fa-box mr-3"></i>
+                    Kelola Produk
+                </a>
+                <a href="barang-masuk.html" class="flex items-center px-6 py-3 text-blue-100 hover:bg-blue-700">
+                    <i class="fas fa-arrow-right mr-3"></i>
+                    Barang Masuk
+                </a>
+                <a href="barang-keluar.html" class="flex items-center px-6 py-3 text-blue-100 hover:bg-blue-700">
+                    <i class="fas fa-arrow-left mr-3"></i>
+                    Barang Keluar
+                </a>
+                <a href="stok-produk.html" class="flex items-center px-6 py-3 text-blue-100 hover:bg-blue-700">
+                    <i class="fas fa-boxes mr-3"></i>
+                    Stok Produk
+                </a>
+                <a href="transaksi.html" class="flex items-center px-6 py-3 bg-blue-900">
+                    <i class="fas fa-exchange-alt mr-3"></i>
+                    Transaksi
+                </a>
+            </nav>
+            
+            <div class="px-6 py-4 border-t border-blue-700">
+                <a href="../index.html" class="flex items-center text-blue-100 hover:text-white">
+                    <i class="fas fa-sign-out-alt mr-3"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1">
+            <!-- Top Navigation -->
+            <div class="bg-white shadow-md py-4 px-6">
+                <div class="flex items-center justify-between">
+                    <h2 class="font-poppins text-xl font-semibold">Transaksi</h2>
+                    <div class="flex items-center">
+                        <span class="text-gray-600 mr-4">Admin</span>
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=0D47A1&color=fff" 
+                             alt="Admin" class="w-8 h-8 rounded-full">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction Content -->
+            <div class="p-6">
+                <!-- Filter Card -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="font-poppins text-lg font-semibold mb-4">Filter Transaksi</h3>
+                    <form class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Mulai</label>
+                            <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Akhir</label>
+                            <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">Semua Status</option>
+                                <option value="completed">Completed</option>
+                                <option value="pending">Pending</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="font-poppins text-lg font-semibold">Daftar Transaksi</h3>
+                    </div>
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Tanggal
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    ID Transaksi
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Customer
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Tipe
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Total
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Aksi
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">2024-01-20</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">#TRX001</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">John Doe</div>
+                                    <div class="text-sm text-gray-500">Member</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">Pembelian Online</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">Rp 250.000</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Completed
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <button onclick="showTransactionDetail('#TRX001')" class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">2024-01-19</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">#TRX002</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">Admin</div>
+                                    <div class="text-sm text-gray-500">Barang Keluar</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">Record Manual</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">Rp 500.000</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Completed
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <button onclick="showTransactionDetail('#TRX002')" class="text-blue-600 hover:text-blue-900">
+                                        <i class="fas fa-eye"></i> Detail
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Export Buttons -->
+                <div class="mt-6 flex space-x-4">
+                    <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center">
+                        <i class="fas fa-file-excel mr-2"></i>
+                        Export to Excel
+                    </button>
+                    <button class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 flex items-center">
+                        <i class="fas fa-file-pdf mr-2"></i>
+                        Export to PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Detail Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="fixed inset-0 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-auto">
+                <!-- Modal Header -->
+                <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="font-poppins text-lg font-semibold">Detail Transaksi</h3>
+                    <button onclick="closeTransactionModal()" class="text-gray-400 hover:text-gray-500">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Content -->
+                <div class="p-6">
+                    <!-- Transaction Info - Centered -->
+                    <div class="mb-6 text-center">
+                        <div class="inline-grid grid-cols-2 gap-8 text-left">
+                            <div class="px-4">
+                                <p class="text-sm text-gray-600">ID Transaksi</p>
+                                <p class="font-medium" id="modalTransactionId">#TRX001</p>
+                            </div>
+                            <div class="px-4">
+                                <p class="text-sm text-gray-600">Tanggal</p>
+                                <p class="font-medium">2024-01-20</p>
+                            </div>
+                            <div class="px-4">
+                                <p class="text-sm text-gray-600">Customer</p>
+                                <p class="font-medium">John Doe</p>
+                                <p class="text-sm text-gray-500">Member</p>
+                            </div>
+                            <div class="px-4">
+                                <p class="text-sm text-gray-600">Status</p>
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    Completed
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Product List -->
+                    <div class="border rounded-lg overflow-hidden mb-6">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Produk</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Qty</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Harga</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm text-gray-900">Rice</div>
+                                        <div class="text-sm text-gray-500">Premium Quality</div>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">2</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Rp 75.000</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Rp 150.000</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3">
+                                        <div class="text-sm text-gray-900">Cooking Oil</div>
+                                        <div class="text-sm text-gray-500">Pure Vegetable</div>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">2</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Rp 50.000</td>
+                                    <td class="px-4 py-3 text-sm text-gray-900">Rp 100.000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Total Section -->
+                    <div class="border-t pt-4">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">Subtotal</span>
+                            <span class="font-medium">Rp 250.000</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-600">Pajak (11%)</span>
+                            <span class="font-medium">Rp 27.500</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-semibold">
+                            <span>Total</span>
+                            <span>Rp 277.500</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 border-t border-gray-200 flex justify-end">
+                    <button onclick="closeTransactionModal()" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTransactionDetail(transactionId) {
+            document.getElementById('modalTransactionId').textContent = transactionId;
+            document.getElementById('transactionModal').classList.add('show');
+        }
+
+        function closeTransactionModal() {
+            document.getElementById('transactionModal').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
