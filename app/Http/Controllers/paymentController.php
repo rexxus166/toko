@@ -32,7 +32,11 @@ class paymentController extends Controller
     {
         // Ambil keranjang dan total
         $cart = Cart::where('user_id', auth()->id())->get();
-        $total = $cart->sum('subtotal') + 2000; // Tambahkan fee jika ada
+        $total = $cart->sum('subtotal');
+        $fee = 2000;  // Fee admin
+
+        // Hitung total akhir dengan fee admin
+        $finalTotal = $total + $fee;
 
         // Konfigurasi Midtrans
         Config::$serverKey = env('MIDTRANS_SERVER_KEY');
@@ -42,7 +46,7 @@ class paymentController extends Controller
         // Membuat transaksi di Midtrans
         $transaction_details = array(
             'order_id' => 'ORDER-' . uniqid(),
-            'gross_amount' => $total, // Total amount yang dibayar
+            'gross_amount' => $finalTotal, // Total amount yang dibayar
         );
 
         // Detil barang
@@ -56,6 +60,14 @@ class paymentController extends Controller
             );
         }
 
+        // Menambahkan fee admin
+        $items[] = [
+            'id' => 'fee',
+            'name' => 'Admin Fee',
+            'price' => $fee,
+            'quantity' => 1,
+        ];
+
         // Detail pembayaran
         $payment_type = 'credit_card'; // Kamu bisa menggunakan berbagai jenis pembayaran lainnya
         $credit_card = array(
@@ -68,13 +80,18 @@ class paymentController extends Controller
             'item_details' => $items,
             'payment_type' => $payment_type,
             'credit_card' => $credit_card,
+            'customer_details' => array(
+                'first_name' => auth()->user()->full_name,
+                'email' => auth()->user()->email,
+                'phone' => auth()->user()->phone_number,
+            ),
         );
 
         // Menyimpan transaksi ke database
         $transaction = UserTransaction::create([
             'user_id' => auth()->id(),
-            'transaction_id' => 'ORDER-' . uniqid(),  // Menggunakan ID transaksi unik
-            'total' => $total,
+            'transaction_id' => 'ORDER-' . time(),
+            'total' => $finalTotal,
             'status' => 'pending',
             'payment_url' => null,  // Bisa diupdate nanti jika ada URL pembayaran
         ]);
