@@ -123,33 +123,73 @@ class paymentController extends Controller
     // Handle callback dari Midtrans
     public function callback(Request $request)
     {
-        // Verifikasi signature key
         $serverKey = config('midtrans.server_key');
         $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
 
         if ($hashed == $request->signature_key) {
-            if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
-                $transaction = UserTransaction::where('transaction_id', $request->order_id)->first();
+            $transaction = UserTransaction::where('transaction_id', $request->order_id)->first();
 
-                // Periksa apakah transaksi ditemukan
-                if ($transaction) {
-                    // Update status transaksi
+            // Periksa apakah transaksi ditemukan
+            if ($transaction) {
+                // Jika status adalah capture atau settlement, update status transaksi menjadi success
+                if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
                     $transaction->update(['status' => 'success']);
-
-                    // Generate URL invoice berdasarkan order_id
-                    $invoiceUrl = route('invoice.show', ['order_id' => $transaction->transaction_id]);
-
-                    // Simpan URL invoice ke database
-                    $transaction->invoice_url = $invoiceUrl;
-                    $transaction->save(); // Pastikan untuk menyimpan perubahan
-
-                    // Redirect user ke halaman invoice
-                    return redirect($invoiceUrl);
-                } else {
-                    Log::error("Transaksi dengan order_id {$request->order_id} tidak ditemukan.");
-                    return response()->json(['error' => 'Transaction not found'], 404);
+                    // Mengurangi stok produk jika transaksi berhasil
+                    $this->updateProductStock($transaction);
                 }
+                // Jika status adalah cancel, update status transaksi menjadi failed dan tidak mengurangi stok
+                elseif ($request->transaction_status == 'cancel') {
+                    $transaction->update(['status' => 'failed']);
+                    // Tidak ada pengurangan stok jika transaksi dibatalkan
+                }
+            } else {
+                // Tangani jika transaksi tidak ditemukan
+                Log::error("Transaksi dengan order_id {$request->order_id} tidak ditemukan.");
+                return response()->json(['error' => 'Transaction not found'], 404);
             }
         }
     }
+
+    private function updateProductStock($transaction)
+    {
+        // Pindahkan data produk dari transaction_items dan kurangi stok produk
+        foreach ($transaction->items as $item) {
+            $product = $item->product;
+            $product->stock -= $item->quantity;
+            $product->save();
+        }
+    }
+
+
+    // public function callback(Request $request)
+    // {
+    //     // Verifikasi signature key
+    //     $serverKey = config('midtrans.server_key');
+    //     $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+
+    //     if ($hashed == $request->signature_key) {
+    //         if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
+    //             $transaction = UserTransaction::where('transaction_id', $request->order_id)->first();
+
+    //             // Periksa apakah transaksi ditemukan
+    //             if ($transaction) {
+    //                 // Update status transaksi
+    //                 $transaction->update(['status' => 'success']);
+
+    //                 // Generate URL invoice berdasarkan order_id
+    //                 $invoiceUrl = route('invoice.show', ['order_id' => $transaction->transaction_id]);
+
+    //                 // Simpan URL invoice ke database
+    //                 $transaction->invoice_url = $invoiceUrl;
+    //                 $transaction->save(); // Pastikan untuk menyimpan perubahan
+
+    //                 // Redirect user ke halaman invoice
+    //                 return redirect($invoiceUrl);
+    //             } else {
+    //                 Log::error("Transaksi dengan order_id {$request->order_id} tidak ditemukan.");
+    //                 return response()->json(['error' => 'Transaction not found'], 404);
+    //             }
+    //         }
+    //     }
+    // }
 }

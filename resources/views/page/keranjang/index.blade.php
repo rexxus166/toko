@@ -27,7 +27,16 @@
                             </tr>
                         </thead>
                         <tbody>
+                        @php
+                            $stockError = false;  // Flag untuk mengecek apakah ada produk yang stoknya melebihi
+                        @endphp
                         @foreach ($cart as $item)
+                            @php
+                                $product = $item->product;
+                                if ($item->quantity > $product->stock) {
+                                    $stockError = true;
+                                }
+                            @endphp
                             <tr class="border-b">
                                 <td class="py-4">
                                     <div class="flex items-center">
@@ -73,7 +82,7 @@
                         <!-- Tombol Checkout dengan kondisi disable -->
                         <a href="{{ route('cart.checkout') }}" 
                             class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 
-                            @if ($cart->isEmpty()) pointer-events-none opacity-50 @endif">
+                            @if ($cart->isEmpty() || $stockError) pointer-events-none opacity-50 @endif">
                             <i class="fas fa-arrow-right mr-2"></i>
                             Checkout
                         </a>

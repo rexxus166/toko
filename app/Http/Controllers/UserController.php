@@ -37,9 +37,11 @@ class UserController extends Controller
 
     public function order(Request $request)
     {
-        // Mengambil transaksi hanya untuk user yang sedang login
-        $transactions = UserTransaction::where('user_id', auth()->id())->get();
-        
+        // Mengambil transaksi hanya untuk user yang sedang login, diurutkan berdasarkan created_at (terbaru di atas)
+        $transactions = UserTransaction::where('user_id', auth()->id())
+                                    ->orderBy('created_at', 'desc')  // Mengurutkan transaksi berdasarkan tanggal terbaru
+                                    ->get();
+            
         return view('page.riwayat-transaksi.index', compact('transactions'));
     }
 }

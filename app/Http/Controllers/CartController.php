@@ -65,17 +65,46 @@ class CartController extends Controller
     // Mengupdate jumlah produk dalam keranjang
     public function update(Request $request, $id)
     {
+        // Ambil data jumlah yang diminta
         $quantity = $request->quantity;
+
+        // Ambil data keranjang berdasarkan ID
         $cart = Cart::find($id);
 
         if ($cart) {
+            // Ambil produk terkait di keranjang
+            $product = $cart->product;
+
+            // Cek jika jumlah yang diminta melebihi stok yang ada
+            if ($quantity > $product->stock) {
+                // Jika jumlah melebihi stok, berikan pesan error
+                Alert::error('Stok Tidak Cukup', 'Produk ' . $product->name . ' hanya tersedia ' . $product->stock . $product->unit)->autoClose(10000);
+                return redirect()->route('cart.index');  // Kembalikan ke halaman keranjang
+            }
+
+            // Jika stok cukup, update jumlah dan subtotal
             $cart->quantity = $quantity;
             $cart->subtotal = $cart->quantity * $cart->price;
             $cart->save();
         }
 
+        // Kembalikan ke halaman keranjang setelah update
         return redirect()->route('cart.index');
     }
+
+    // public function update(Request $request, $id)
+    // {
+    //     $quantity = $request->quantity;
+    //     $cart = Cart::find($id);
+
+    //     if ($cart) {
+    //         $cart->quantity = $quantity;
+    //         $cart->subtotal = $cart->quantity * $cart->price;
+    //         $cart->save();
+    //     }
+
+    //     return redirect()->route('cart.index');
+    // }
 
     // Menghapus produk dari keranjang
     public function remove($id)
