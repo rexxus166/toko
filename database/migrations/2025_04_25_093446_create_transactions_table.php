@@ -18,6 +18,8 @@ return new class extends Migration
             $table->decimal('total', 10, 2);  // Total harga transaksi
             $table->enum('status', ['pending', 'success', 'failed'])->default('pending');
             $table->string('payment_url')->nullable();  // URL pembayaran
+            $table->string('payment_method')->nullable();  // Metode pembayaran
+            $table->string('invoice_url')->nullable();  // URL invoice
             $table->timestamps();
         });
     }

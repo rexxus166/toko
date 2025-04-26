@@ -105,22 +105,53 @@ class paymentController extends Controller
     }
 
     // Handle callback dari Midtrans
+    // public function callback(Request $request)
+    // {
+    //     $serverKey = config('midtrans.server_key');
+    //     $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+
+    //     if($hashed == $request->signature_key) {
+    //         if($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
+    //             $transaction = UserTransaction::where('transaction_id', $request->order_id)->first();
+
+    //             // Periksa apakah transaksi ditemukan
+    //             if ($transaction) {
+    //                 $transaction->update(['status' => 'success']);
+    //                 $transaction->save();
+    //             } else {
+    //                 // Tangani jika transaksi tidak ditemukan
+    //                 // Misalnya, log atau beri respons error
+    //                 Log::error("Transaksi dengan order_id {$request->order_id} tidak ditemukan.");
+    //                 return response()->json(['error' => 'Transaction not found'], 404);
+    //             }
+    //         }
+    //     }
+    // }
+
     public function callback(Request $request)
     {
         $serverKey = config('midtrans.server_key');
         $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
 
-        if($hashed == $request->signature_key) {
-            if($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
+        if ($hashed == $request->signature_key) {
+            if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
                 $transaction = UserTransaction::where('transaction_id', $request->order_id)->first();
 
                 // Periksa apakah transaksi ditemukan
                 if ($transaction) {
+                    // Update status transaksi
                     $transaction->update(['status' => 'success']);
-                    $transaction->save();
+
+                    // Generate URL invoice berdasarkan order_id
+                    $invoiceUrl = route('invoice.show', ['order_id' => $transaction->transaction_id]);
+
+                    // Simpan URL invoice ke database
+                    $transaction->invoice_url = $invoiceUrl;
+                    $transaction->save(); // Pastikan untuk menyimpan perubahan
+
+                    // Redirect user ke halaman invoice
+                    return redirect($invoiceUrl);
                 } else {
-                    // Tangani jika transaksi tidak ditemukan
-                    // Misalnya, log atau beri respons error
                     Log::error("Transaksi dengan order_id {$request->order_id} tidak ditemukan.");
                     return response()->json(['error' => 'Transaction not found'], 404);
                 }

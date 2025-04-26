@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // Mengecualikan CSRF untuk route tertentu
         $middleware->validateCsrfTokens(except: [
-            'https://5147-202-46-68-199.ngrok-free.app/checkout/callback',
+            'https://9b9a-103-184-122-43.ngrok-free.app/checkout/callback',
             'checkout/callback',
         ]);
     })

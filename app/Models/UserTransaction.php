@@ -19,5 +19,6 @@ class UserTransaction extends Model
         'total', 
         'status', 
         'payment_url',
+        'invoice_url',
     ];
 }

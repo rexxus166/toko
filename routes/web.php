@@ -7,6 +7,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\paymentController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BarangMasukController;
@@ -85,6 +86,9 @@ Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.r
 Route::get('/checkout', [paymentController::class, 'checkout'])->name('cart.checkout');
 Route::post('/payment', [paymentController::class, 'processPayment'])->name('payment');
 Route::post('/checkout/callback', [paymentController::class, 'callback']);
+
+// Invoice
+Route::get('/dashboard/invoice-{order_id}', [InvoiceController::class, 'show'])->name('invoice.show');
 
 // Route logout user
 Route::post('/logout', [AuthController::class, 'userLogout'])->name('user.logout');
