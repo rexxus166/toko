@@ -12,16 +12,19 @@
     <!-- Main Content -->
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="bg-white rounded-lg shadow-md p-8 text-center">
-            <!-- Success Icon -->
+            <!-- Pending Icon -->
             <div class="mb-8">
-                <div class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center animate-checkmark">
-                    <i class="fas fa-check text-4xl text-green-500"></i>
+                <div class="mx-auto w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center animate-pending">
+                    <i class="fas fa-hourglass-half text-4xl text-yellow-500"></i>
                 </div>
             </div>
 
-            <!-- Success Message -->
-            <h2 class="text-3xl font-poppins font-bold text-gray-900 mb-4">Order Successful!</h2>
-            <p class="text-gray-600 mb-8">Thank you for your purchase. Your order has been successfully placed.</p>
+            <!-- Pending Message -->
+            <h2 class="text-3xl font-poppins font-bold text-gray-900 mb-4">Order Pending</h2>
+            <p class="text-gray-600 mb-8">
+                Pesanan Anda saat ini sedang menunggu pembayaran. <br>Harap segera lakukan pembayaran sebelum 
+                <strong>{{ \Carbon\Carbon::parse($transaction->expiry_time)->format('F j, Y H:i') }}</strong>.
+            </p>
 
             <!-- Order Details -->
             <div class="bg-gray-50 rounded-lg p-6 mb-8">
@@ -37,7 +40,7 @@
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Payment Method:</span>
-                        <span class="font-medium">GoPay</span>
+                        <span class="font-medium">{{ $paymentMethodName }}</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Total Amount:</span>
@@ -50,14 +53,14 @@
                 </div>
             </div>
 
-            <!-- Estimated Delivery -->
-            <div class="bg-blue-50 rounded-lg p-6 mb-8">
+            <!-- Estimated Time -->
+            <div class="bg-yellow-100 rounded-lg p-6 mb-8">
                 <div class="flex items-center justify-center mb-4">
-                    <i class="fas fa-truck text-blue-600 text-2xl mr-3"></i>
-                    <h3 class="font-semibold text-lg">Estimated Delivery</h3>
+                    <i class="fas fa-clock text-yellow-600 text-2xl mr-3"></i>
+                    <h3 class="font-semibold text-lg">Estimated Confirmation Time</h3>
                 </div>
-                <p class="text-gray-600">Your order will be delivered within</p>
-                <p class="font-semibold text-blue-600 text-lg">2-3 Business Days</p>
+                <p class="text-gray-600">Your payment confirmation will be processed within</p>
+                <p class="font-semibold text-yellow-600 text-lg">1-2 Business Days</p>
             </div>
 
             <!-- Action Buttons -->
@@ -65,9 +68,6 @@
                 <a href="{{ route('user.dashboard') }}" class="block w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700">
                     Kembali ke Dashboard
                 </a>
-                {{-- <a href="#" class="block w-full bg-gray-100 text-gray-700 py-3 rounded-lg hover:bg-gray-200">
-                    Track Order
-                </a> --}}
             </div>
         </div>
     </div>

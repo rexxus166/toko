@@ -172,7 +172,15 @@
                 },
                     onPending: function(result) {
                         console.log(result);
-                        // Redirect atau tampilkan halaman pending
+
+                        // Dapatkan order_id atau transaction_id dari result (sesuaikan dengan response dari Midtrans)
+                        var orderId = result.order_id; // Pastikan nama field ini sesuai dengan data yang dikembalikan oleh Midtrans
+                        
+                        // Buat URL invoice dengan memasukkan order_id atau transaction_id ke dalam URL
+                        var invoiceUrl = '/dashboard/invoice-' + orderId;
+                        
+                        // Arahkan pengguna ke halaman invoice
+                        window.location.href = invoiceUrl;
                     },
                     onError: function(result) {
                         console.log(result);

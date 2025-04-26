@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('payment_url')->nullable();  // URL pembayaran
             $table->string('payment_method')->nullable();  // Metode pembayaran
             $table->string('invoice_url')->nullable();  // URL invoice
+            $table->timestamp('expiry_time')->nullable();
             $table->timestamps();
         });
     }

@@ -39,9 +39,22 @@ class UserController extends Controller
     {
         // Mengambil transaksi hanya untuk user yang sedang login, diurutkan berdasarkan created_at (terbaru di atas)
         $transactions = UserTransaction::where('user_id', auth()->id())
-                                    ->orderBy('created_at', 'desc')  // Mengurutkan transaksi berdasarkan tanggal terbaru
-                                    ->get();
-            
+                                        ->orderBy('created_at', 'desc')  // Mengurutkan transaksi berdasarkan tanggal terbaru
+                                        ->get();
+
+        // Mapping untuk payment method
+        $paymentMethods = [
+            'bank_transfer' => 'Bank Transfer',
+            'qris' => 'Qris',
+            'credit_card' => 'Credit Card',
+            // Tambahkan metode pembayaran lainnya jika diperlukan
+        ];
+
+        // Menambahkan nama metode pembayaran di setiap transaksi
+        foreach ($transactions as $transaction) {
+            $transaction->payment_method_name = $paymentMethods[$transaction->payment_method] ?? 'Unknown Payment Method';
+        }
+                
         return view('page.riwayat-transaksi.index', compact('transactions'));
     }
 }

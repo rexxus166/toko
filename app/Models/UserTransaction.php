@@ -21,6 +21,7 @@ class UserTransaction extends Model
         'status', 
         'payment_url',
         'invoice_url',
+        'expiry_time',
     ];
 
     // Model UserTransaction

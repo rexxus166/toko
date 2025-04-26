@@ -64,7 +64,7 @@
                                 </div>
                                 <div>
                                     <p class="text-gray-600">Payment Method:</p>
-                                    <p>Gopay</p>
+                                    <p>{{ $transaction->payment_method_name }}</p>
                                 </div>
                             </div>
                             <div class="flex justify-between items-center pt-4 border-t">

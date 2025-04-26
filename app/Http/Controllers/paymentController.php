@@ -7,8 +7,8 @@ use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Cart;
 use App\Models\UserTransaction;
 use App\Models\TransactionItem;
-use Midtrans\Config;  // Pastikan ini ada di sini!
-use Midtrans\Snap;    // Ini untuk Snap API
+use Midtrans\Config;
+use Midtrans\Snap;
 use Illuminate\Support\Facades\Log;
 
 class paymentController extends Controller
@@ -72,7 +72,7 @@ class paymentController extends Controller
         ];
 
         // Detail pembayaran
-        $payment_type = 'credit_card'; // Kamu bisa menggunakan berbagai jenis pembayaran lainnya
+        $payment_type = 'credit_card'; // Kamu bisa menggunakan berbagai jenis pembayaran lainnya, ganti ini dengan pilihan yang sesuai
         $credit_card = array(
             'secure' => true,
         );
@@ -97,6 +97,8 @@ class paymentController extends Controller
             'total' => $finalTotal,
             'status' => 'pending',
             'payment_url' => null,  // Bisa diupdate nanti jika ada URL pembayaran
+            'payment_method' => $payment_type,  // Menyimpan payment method
+            'expire_time' => now()->addMinutes(15),  // Misalnya 15 menit setelah transaksi dibuat, disesuaikan dengan waktu kadaluarsa Midtrans
         ]);
 
         // Pindahkan data produk dari keranjang ke transaction_items
@@ -120,7 +122,7 @@ class paymentController extends Controller
         return response()->json(['snap_token' => $snapToken]);
     }
 
-    // Handle callback dari Midtrans
+    // Callback
     public function callback(Request $request)
     {
         $serverKey = config('midtrans.server_key');
@@ -131,16 +133,21 @@ class paymentController extends Controller
 
             // Periksa apakah transaksi ditemukan
             if ($transaction) {
-                // Jika status adalah capture atau settlement, update status transaksi menjadi success
+                // Simpan payment_method dari Midtrans
+                $transaction->payment_method = $request->payment_type;  // Simpan payment_type ke database
+                $transaction->expiry_time = $request->expiry_time;  // Simpan expiry_time ke database
+                $transaction->save();
+
+                // Lakukan pengecekan status transaksi
                 if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
                     $transaction->update(['status' => 'success']);
                     // Mengurangi stok produk jika transaksi berhasil
                     $this->updateProductStock($transaction);
-                }
-                // Jika status adalah cancel, update status transaksi menjadi failed dan tidak mengurangi stok
-                elseif ($request->transaction_status == 'cancel') {
+                } elseif ($request->transaction_status == 'cancel') {
                     $transaction->update(['status' => 'failed']);
                     // Tidak ada pengurangan stok jika transaksi dibatalkan
+                } elseif ($request->transaction_status == 'pending') {
+                    $transaction->update(['status' => 'pending']);
                 }
             } else {
                 // Tangani jika transaksi tidak ditemukan
@@ -159,37 +166,4 @@ class paymentController extends Controller
             $product->save();
         }
     }
-
-
-    // public function callback(Request $request)
-    // {
-    //     // Verifikasi signature key
-    //     $serverKey = config('midtrans.server_key');
-    //     $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
-
-    //     if ($hashed == $request->signature_key) {
-    //         if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
-    //             $transaction = UserTransaction::where('transaction_id', $request->order_id)->first();
-
-    //             // Periksa apakah transaksi ditemukan
-    //             if ($transaction) {
-    //                 // Update status transaksi
-    //                 $transaction->update(['status' => 'success']);
-
-    //                 // Generate URL invoice berdasarkan order_id
-    //                 $invoiceUrl = route('invoice.show', ['order_id' => $transaction->transaction_id]);
-
-    //                 // Simpan URL invoice ke database
-    //                 $transaction->invoice_url = $invoiceUrl;
-    //                 $transaction->save(); // Pastikan untuk menyimpan perubahan
-
-    //                 // Redirect user ke halaman invoice
-    //                 return redirect($invoiceUrl);
-    //             } else {
-    //                 Log::error("Transaksi dengan order_id {$request->order_id} tidak ditemukan.");
-    //                 return response()->json(['error' => 'Transaction not found'], 404);
-    //             }
-    //         }
-    //     }
-    // }
 }
