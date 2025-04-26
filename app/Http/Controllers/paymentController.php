@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Cart;
-use Midtrans\Config; // Pastikan ini ada di sini!
-use Midtrans\Snap; // Ini untuk Snap API
 use App\Models\UserTransaction;
+use App\Models\TransactionItem;
+use Midtrans\Config;  // Pastikan ini ada di sini!
+use Midtrans\Snap;    // Ini untuk Snap API
 use Illuminate\Support\Facades\Log;
 
 class paymentController extends Controller
@@ -20,11 +21,12 @@ class paymentController extends Controller
         $total = $cart->sum('subtotal');
 
         // Pastikan keranjang tidak kosong sebelum melanjutkan
-        if (empty($cart)) {
+        if ($cart->isEmpty()) {
             Alert::error('Your cart is empty', 'Please add products to your cart before proceeding to checkout.');
             return redirect()->route('cart.index');
         }
 
+        // Kirim data ke halaman checkout
         return view('page.checkout.index', compact('cart', 'total'));
     }
 
@@ -97,6 +99,20 @@ class paymentController extends Controller
             'payment_url' => null,  // Bisa diupdate nanti jika ada URL pembayaran
         ]);
 
+        // Pindahkan data produk dari keranjang ke transaction_items
+        foreach ($cart as $item) {
+            TransactionItem::create([
+                'transaction_id' => $transaction->id,
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+                'subtotal' => $item->subtotal,
+            ]);
+        }
+
+        // Hapus keranjang setelah transaksi selesai
+        Cart::where('user_id', auth()->id())->delete();  // Mengosongkan keranjang pengguna
+
         // Membuat Snap Token
         $snapToken = Snap::getSnapToken($params);
 
@@ -105,31 +121,9 @@ class paymentController extends Controller
     }
 
     // Handle callback dari Midtrans
-    // public function callback(Request $request)
-    // {
-    //     $serverKey = config('midtrans.server_key');
-    //     $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
-
-    //     if($hashed == $request->signature_key) {
-    //         if($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
-    //             $transaction = UserTransaction::where('transaction_id', $request->order_id)->first();
-
-    //             // Periksa apakah transaksi ditemukan
-    //             if ($transaction) {
-    //                 $transaction->update(['status' => 'success']);
-    //                 $transaction->save();
-    //             } else {
-    //                 // Tangani jika transaksi tidak ditemukan
-    //                 // Misalnya, log atau beri respons error
-    //                 Log::error("Transaksi dengan order_id {$request->order_id} tidak ditemukan.");
-    //                 return response()->json(['error' => 'Transaction not found'], 404);
-    //             }
-    //         }
-    //     }
-    // }
-
     public function callback(Request $request)
     {
+        // Verifikasi signature key
         $serverKey = config('midtrans.server_key');
         $hashed = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
 

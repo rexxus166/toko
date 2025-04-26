@@ -90,5 +90,8 @@ Route::post('/checkout/callback', [paymentController::class, 'callback']);
 // Invoice
 Route::get('/dashboard/invoice-{order_id}', [InvoiceController::class, 'show'])->name('invoice.show');
 
+// Riwayat Order
+Route::get('/user/order', [UserController::class, 'order'])->name('user.transaksi')->middleware('auth:web');
+
 // Route logout user
 Route::post('/logout', [AuthController::class, 'userLogout'])->name('user.logout');

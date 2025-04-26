@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\TransactionItem;
 
 class UserTransaction extends Model
 {
@@ -21,4 +22,10 @@ class UserTransaction extends Model
         'payment_url',
         'invoice_url',
     ];
+
+    // Model UserTransaction
+    public function items()
+    {
+        return $this->hasMany(TransactionItem::class, 'transaction_id');
+    }
 }

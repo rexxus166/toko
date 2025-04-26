@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\UserTransaction;
 use App\Models\Cart;
 
 class UserController extends Controller
@@ -32,5 +33,13 @@ class UserController extends Controller
         $cartCount = Cart::where('user_id', auth()->id())->sum('quantity');
 
         return view('page.dashboard.index', compact('products', 'categories', 'cartCount'));
+    }
+
+    public function order(Request $request)
+    {
+        // Mengambil transaksi hanya untuk user yang sedang login
+        $transactions = UserTransaction::where('user_id', auth()->id())->get();
+        
+        return view('page.riwayat-transaksi.index', compact('transactions'));
     }
 }
