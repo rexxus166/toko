@@ -31,14 +31,14 @@
                         <i class="fas fa-plus mr-2"></i>
                         Add New Product
                     </a>
-                    <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center">
+                    <!-- <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center">
                         <i class="fas fa-file-excel mr-2"></i>
                         Export Excel
                     </button>
                     <button class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 flex items-center">
                         <i class="fas fa-barcode mr-2"></i>
                         Generate Barcode
-                    </button>
+                    </button> -->
                 </div>
                 <div class="relative">
                     <input type="text" placeholder="Search products..." 
@@ -159,10 +159,10 @@
                                 <span class="sr-only">Previous</span>
                                 <i class="fas fa-chevron-left"></i>
                             </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-blue-50">
                                 1
                             </a>
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600 hover:bg-blue-50">
+                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
                                 2
                             </a>
                             <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">

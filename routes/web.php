@@ -15,9 +15,13 @@ use App\Http\Controllers\BarangKeluarController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\TransaksiController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route for Guest
+Route::get('/', function () { return view('welcome'); })->name('welcome');
+Route::get('/mitra', function () { return view('mitra'); })->name('mitra');
+Route::get('/profil', function () { return view('visi'); })->name('profil');
+Route::get('/produk', [ProductController::class, 'showProducts'])->name('produk');
+// Route::get('/produk', function () { return view('produk'); })->name('produk');
+Route::get('/kontak', function () { return view('kontak'); })->name('kontak');
 
 // Route login admin
 Route::get('/admin', [AuthController::class, 'showAdminLoginForm'])->name('admin.login');

@@ -15,6 +15,15 @@ class ProductController extends Controller
         return view('admin.produk.index', compact('produk'));
     }
 
+    // Menampilkan halaman produk di Guest
+    public function showProducts()
+    {
+        // Mengambil data produk untuk guest
+        $products = Product::paginate(10);  // Sesuaikan dengan kebutuhan pagination
+
+        return view('produk', compact('products'));
+    }
+
     // Menampilkan halaman form untuk menambah produk baru
     public function newProduk()
     {
