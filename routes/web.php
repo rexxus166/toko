@@ -35,6 +35,9 @@ Route::get('/admin/member', [DashboardController::class, 'member'])->name('admin
 Route::get('/admin/member/new', [DashboardController::class, 'newMember'])->name('admin.new-member')->middleware('auth:admin');
 Route::get('/admin/member/create', [MemberController::class, 'create'])->name('admin.member.create')->middleware('auth:admin');
 Route::post('/admin/member', [MemberController::class, 'store'])->name('admin.member.store')->middleware('auth:admin');
+Route::get('/admin/member/edit/{id}', [DashboardController::class, 'editMember'])->name('admin.member.edit')->middleware('auth:admin');
+Route::post('/admin/member/update/{id}', [DashboardController::class, 'updateMember'])->name('admin.member.update')->middleware('auth:admin');
+Route::delete('/admin/member/delete/{id}', [DashboardController::class, 'deleteMember'])->name('admin.member.delete')->middleware('auth:admin');
 
 // Supplier
 Route::get('/admin/supplier', [SupplierController::class, 'index'])->name('admin.supplier')->middleware('auth:admin');

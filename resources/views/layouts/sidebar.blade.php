@@ -12,7 +12,7 @@
             Dashboard
         </a>
         <a href="{{ route('admin.member') }}" 
-           class="flex items-center px-6 py-3 {{ request()->routeIs('admin.member') || request()->routeIs('admin.new-member') ? 'bg-blue-900' : 'text-blue-100 hover:bg-blue-700' }}">
+           class="flex items-center px-6 py-3 {{ request()->routeIs('admin.member') || request()->routeIs('admin.new-member') || request()->routeIs('admin.member.edit') ? 'bg-blue-900' : 'text-blue-100 hover:bg-blue-700' }}">
             <i class="fas fa-users mr-3"></i>
             Kelola Member
         </a>

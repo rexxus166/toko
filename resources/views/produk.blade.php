@@ -45,6 +45,15 @@
 
 
     <link href="tmplt/admin/libs/sweetalert2/sweetalert2.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        .card-img-top {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+    </style>
+    
 </head>
 
 <body>

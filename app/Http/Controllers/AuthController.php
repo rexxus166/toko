@@ -38,7 +38,7 @@ class AuthController extends Controller
     {
         Auth::guard('admin')->logout();
         Alert::toast('Anda telah berhasil logout.', 'success');
-        return redirect('/');
+        return redirect('/admin');
     }
 
     // Halaman login user

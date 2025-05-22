@@ -33,10 +33,6 @@
                             <i class="fas fa-plus mr-2"></i>
                             Add New Member
                         </a>
-                        <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center">
-                            <i class="fas fa-file-excel mr-2"></i>
-                            Export Excel
-                        </button>
                     </div>
                     <div class="relative">
                         <input type="text" placeholder="Search members..." 
@@ -98,12 +94,19 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button class="text-blue-600 hover:text-blue-900 mr-3">
+                                    <!-- Tombol Edit -->
+                                    <a href="{{ route('admin.member.edit', $member->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">
                                         <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-900">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    </a>
+
+                                    <!-- Tombol Delete -->
+                                    <form action="{{ route('admin.member.delete', $member->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                             @endforeach
